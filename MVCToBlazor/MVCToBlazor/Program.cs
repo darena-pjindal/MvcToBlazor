@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using MVCToBlazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddRazorComponents()
+    .AddServerComponents();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -51,6 +55,11 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//This was required after adding blazor
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>();
 
 app.MapControllerRoute(
     name: "default",
