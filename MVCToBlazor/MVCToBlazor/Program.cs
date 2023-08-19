@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Components.Authorization;
 using MVCToBlazor;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddRazorComponents()
-    .AddServerComponents();
+builder.Services.AddRazorComponents();
+builder.Services.AddScoped<AuthenticationStateProvider, MvcAuthenticationStateProvider>();
 
 builder.Services.AddAuthentication(options =>
     {

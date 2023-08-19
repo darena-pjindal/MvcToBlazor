@@ -1,0 +1,39 @@
+﻿@page "/claims"
+@using Microsoft.AspNetCore.Components.Authorization
+
+
+<AuthorizeView>
+ 
+    <Authorized>
+        <div class="claims-content">
+            <h2>
+                Hello @context.User.Identity.Name,
+                here's the list of your claims:
+            </h2>
+            <ul>
+                @foreach (var claim in context.User.Claims)
+                {
+                    <li><b>@claim.Type</b>: @claim.Value</li>
+                }
+            </ul>
+        </div>
+        
+    </Authorized>
+    <NotAuthorized>
+        <p>Oops!!, We can't display anything until you log in</p>
+    </NotAuthorized>
+</AuthorizeView>
+@code
+{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        var user = authState.User;
+    }
+
+    
+
+}
