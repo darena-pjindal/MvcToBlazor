@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MVCToBlazor.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MVCToBlazor.Controllers
 {
@@ -17,7 +18,7 @@ namespace MVCToBlazor.Controllers
         {
             return View();
         }
-
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

@@ -1,7 +1,38 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddCookie()
+    //https://demo.duendesoftware.com/
+    .AddOpenIdConnect(options =>
+    {
+        options.Authority = "https://demo.duendesoftware.com";
+        options.ClientId = "interactive.public.short";
+        options.ResponseType = "code"; // for code flow; or "id_token" for implicit flow
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.SaveTokens = true;
+
+        // Handle the token response
+        options.Events = new OpenIdConnectEvents
+        {
+            OnTokenResponseReceived = context =>
+            {
+                // Handle the token response here if needed.
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 
@@ -18,6 +49,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
