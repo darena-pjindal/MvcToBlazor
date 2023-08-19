@@ -12,6 +12,9 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorComponents();
 builder.Services.AddScoped<AuthenticationStateProvider, MvcAuthenticationStateProvider>();
+
+//We could inject the services directly in the components, than an API layer. This will keep it docoupled and ensure that all business logic
+//that exists in API layer are consistently applied. Need to evaluate if there are any performance gains of using services directly like in MVC
 builder.Services.AddSingleton<TasksRepository>();
 builder.Services.AddHttpClient<MyTasksClient>( c =>
 {

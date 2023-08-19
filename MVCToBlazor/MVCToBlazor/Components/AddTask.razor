@@ -2,7 +2,7 @@
 <h3>AddTask</h3>
 <EditForm method="post" class="review-editor" Model="NewTask" OnValidSubmit="OnValidSubmit" FormName="star-review">
     <DataAnnotationsValidator />
-    <InputTextArea rows="5" placeholder="Write a review" @bind-Value="NewTask.Title" />
+    <InputTextArea placeholder="Add Title" @bind-Value="NewTask.Title" />
     <ValidationMessage For="() => NewTask.Title" />
     <button type="submit">Submit</button>
 </EditForm>
