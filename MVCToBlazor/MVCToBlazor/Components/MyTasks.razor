@@ -1,0 +1,42 @@
+﻿@page "/mytasks"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<h3>MyTasks</h3>
+
+
+<AuthorizeView>
+ 
+    <Authorized>
+        <a href="addtask">Add Task</a>
+
+        <div class="claims-content">
+            <h2>
+                Here's the list of your Tasks:
+            </h2>
+            <ul>
+                @foreach (var tasks in TasksList)
+                {
+                    <li><b>@tasks.Title</b>: @tasks.Title</li>
+                }
+            </ul>
+        </div>
+
+    </Authorized>
+    <NotAuthorized>
+        <p>Oops!!, We can't display anything until you log in</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Inject]
+    public MyTasksClient MyTasksClient { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        TasksList = await MyTasksClient.GetTasksAsync();
+    }
+    
+
+    public List<MyTask> TasksList { get; set; } = new();
+   
+}

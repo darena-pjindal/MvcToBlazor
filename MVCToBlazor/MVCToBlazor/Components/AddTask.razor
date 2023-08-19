@@ -1,0 +1,21 @@
+﻿@page "/addtask"
+<h3>AddTask</h3>
+<EditForm method="post" class="review-editor" Model="NewTask" OnValidSubmit="OnValidSubmit" FormName="star-review">
+    <DataAnnotationsValidator />
+    <InputTextArea rows="5" placeholder="Write a review" @bind-Value="NewTask.Title" />
+    <ValidationMessage For="() => NewTask.Title" />
+    <button type="submit">Submit</button>
+</EditForm>
+@code {
+
+    [Inject]public MyTasksClient MyTasksClient { get; set; }
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+    [SupplyParameterFromForm]
+    public MyTask NewTask { get; set; } = new();
+    async Task OnValidSubmit()
+    {
+        await MyTasksClient.CreateTaskAsync(new MyTask { Title = NewTask.Title });
+        NavigationManager.NavigateTo("/mytasks");
+    }
+}

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -11,6 +12,11 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorComponents();
 builder.Services.AddScoped<AuthenticationStateProvider, MvcAuthenticationStateProvider>();
+builder.Services.AddSingleton<TasksRepository>();
+builder.Services.AddHttpClient<MyTasksClient>( c =>
+{
+    c.BaseAddress = new Uri("https://localhost:7201");
+});
 
 builder.Services.AddAuthentication(options =>
     {
@@ -28,6 +34,8 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Add("openid");
         options.Scope.Add("profile");
         options.SaveTokens = true;
+
+        options.MapInboundClaims = false;
 
         // Handle the token response
         options.Events = new OpenIdConnectEvents
@@ -66,5 +74,12 @@ app.MapRazorComponents<App>();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+app.MapGet("api/tasks", async (TasksRepository tasksService) =>
+    Results.Ok(await tasksService.GetMyTasks()));
+
+app.MapPost("api/tasks", async (MyTask myTask, TasksRepository tasksService) =>
+    await tasksService.AddTask(myTask));
 
 app.Run();
