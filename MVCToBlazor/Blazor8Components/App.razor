@@ -1,4 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Reflection
+@using Blazor8Components
+@using Blazor8Components.Shared
+@using Microsoft.AspNetCore.Components.Routing
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +21,7 @@
 
 <body>
 
-    <Router AppAssembly="@typeof(App).Assembly">
+    <Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] { typeof(Component1).Assembly }">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
