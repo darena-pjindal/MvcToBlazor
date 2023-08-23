@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using MVCToBlazor;
 
@@ -11,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorComponents();
-builder.Services.AddScoped<AuthenticationStateProvider, MvcAuthenticationStateProvider>();
+//builder.Services.AddScoped<AuthenticationStateProvider, MvcAuthenticationStateProvider>();
 
 //We could inject the services directly in the components, than an API layer. This will keep it docoupled and ensure that all business logic
 //that exists in API layer are consistently applied. Need to evaluate if there are any performance gains of using services directly like in MVC
@@ -19,7 +20,7 @@ builder.Services.AddSingleton<TasksRepository>();
 builder.Services.AddHttpClient<MyTasksClient>( c =>
 {
     c.BaseAddress = new Uri("https://localhost:7201");
-});
+}).AddHttpMessageHandler<ForwardCookieHandler>();
 
 builder.Services.AddAuthentication(options =>
     {
@@ -79,10 +80,10 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-app.MapGet("api/tasks", async (TasksRepository tasksService) =>
+app.MapGet("api/tasks",[Authorize] async (TasksRepository tasksService) =>
     Results.Ok(await tasksService.GetMyTasks()));
 
-app.MapPost("api/tasks", async (MyTask myTask, TasksRepository tasksService) =>
+app.MapPost("api/tasks", [Authorize] async (MyTask myTask, TasksRepository tasksService) =>
     await tasksService.AddTask(myTask));
 
 app.Run();

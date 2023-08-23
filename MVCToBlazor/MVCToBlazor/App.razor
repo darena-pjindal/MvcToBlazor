@@ -16,7 +16,7 @@
 </head>
 
 <body>
-
+    <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -29,7 +29,7 @@
             </LayoutView>
         </NotFound>
     </Router>
-
+    </CascadingAuthenticationState>
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
